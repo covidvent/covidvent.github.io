@@ -1,0 +1,142 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Ventilator Prediction </title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script>
+    var on_vent; 
+    var arrivals;
+    var outputText;
+        function validate() {
+            // get the input
+            on_vent = document.forms["input_form"]["aterm"].value;
+            arrivals = document.forms["input_form"]["bterm"].value;
+            // validate a, b and c
+            if (on_vent < 0) {
+                outputText = "<em>number of patients</em> cannot be less then zero!";
+            } else if (arrivals < 0) {
+                outputText = "<em>number of patients</em> cannot be less then zero!";
+            } else if (isNaN(on_vent)) {
+                outputText = "<em>number of patients</em> must be a number!";
+            } else if (isNaN(arrivals)) {
+                outputText = "<em>number of patients</em> must be a number!";
+            } else {
+                // calculate the result using x = (-b +- sqrt(b^2 - 4ac)) / 2a
+                var los1 = 10;
+                var los2 = 5;
+                var los3 = 5;
+                var p1 = 0.7;
+                var p2 = 0.06;
+                var p3 = 0.24;
+                var los_av = p1*los1+p2*los2+p3*los3;
+                var ans = Math.trunc((p2+p3)/los_av*on_vent + (p2/los2+p3/los3)*arrivals);
+                outputText = "Number of new patients who will require ventilator support tomorrow: <strong>" + ans;
+            }
+            // output the result (or errors)
+            document.getElementById("output_text").innerHTML = outputText;
+			document.getElementById("output_text").style.fontSize = "18px";
+        }
+   </script>
+</head>
+	
+<body style="background-color:white;"> 
+   <img src="Cornell ORIE logo.jpg"; style="width:700px"; alt="Cornell ORIE Logo">
+   <div class="container">
+ 	<ul class="nav nav-tabs">
+    	<li class="active"><a data-toggle="tab"; href="#home">Home</a></li>
+    	<li><a data-toggle="tab"; href="#modeloverview">Model Overview</a></li>
+   	<li><a data-toggle="tab"; href="#people">People</a></li>
+  	</ul>  
+		
+   <div class="tab-content">
+    	<div id="home"; class="tab-pane fade in active"> 
+	   <h3 style="text-align:left;font-family:Arial;"> How many ventilators will be needed tomorrow? </h3>	
+
+		Our algorithm below will predict the number of new patients with COVID-19 that will require a ventilator 
+		tomorrow based on 2 easily accessible inputs. To learn more about how our algorithm works and why you can 
+		trust it, click here (link to model overview)	   
+	   <br></br>
+    	   <form name="input_form" action="javascript:validate();">
+           <font size="+1">Current number of patients with COVID-19 in your hospital(s) not on ventilators:</font>  <input type="text" name="aterm" size="5" required>
+	   <br><br>
+           <font size="+1">Anticipated number of hospitalized patients with COVID-19 tomorrow:</font>  <input type="text" name="bterm" size="5" required>
+   	   <br><br>
+           <input type="submit" value="Calculate">
+   	   </form>
+   	   <p id="output_text"/>
+		
+		<hr> 
+		
+		<h3 style="text-align:left;font-family:Arial;"> Need help with estimating the number of admissions tomorrow?</h3>
+		   Our tool below predicts the number of admissions tomorrow. Please provide the number of daily admissions over the last 2 or more days
+	<embed src="https://new-admission-prediction.shinyapps.io/new_admission/" style="width:900px; height: 500px;">	
+		
+	</div>
+	   
+	<div id="modeloverview"; class="tab-pane fade"> 
+	   <h3 style="text-align:left;font-family:Arial;"> The Ventilator Shortage</h3>
+	   
+ <p style="font-size:18px;white-space: normal; word-break:normal">  Mechanical ventilation is a major component of vital medical support for COVID-19 patients with severe acute
+  respiratory failure. Many hospitals in the U.S. and other countries have been already experiencing ventilator 
+  shortages. Our model provides these hospitals with meaningful predictions to assist them in the dynamic 
+  allocation of ventilators from a central stockpile.</p></pre>
+	   <h3 style="text-align:left;font-family:Arial;"> Our Model </h3>
+	   
+ <p style="font-size:18px;white-space: normal; word-break:normal"> We developed an algorithm that predicts the number of Covid-19 patients who will start to require ventilators.
+  This algorithm is intended to be utilized by a large hospital or a group of coordinated hospitals (see 
+  documentation (link to be added) for details).</p></pre>
+	
+<table>
+<tr>
+<td  style="vertical-align:middle; margin: 50px; padding: 5px;"><img src="Vents_NYC_sim_errorbars_2.png" style="width:100%"></td>
+<td style="vertical-align:middle; margin: 50px; padding: 50px;">Based on medical reports and articles with information about course of the COVID-19 we create a simulation model 
+    that is calibrated with New York City's Covid-19 data.</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; margin: 50px; padding: 5px;"><img src="VentStarts_2.png" alt="Snow" style="width:100%"></td>
+<td style="vertical-align:middle; margin: 50px; padding: 50px;">We predict the number of new patients who require ventilatory support the next day based on two numbers: (1) number 
+of hospitalized patients not currently ventilated and (2) anticipated number of new hospital admissions on the next day.</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; margin: 50px; padding: 5px;"><img src="FreeVent_2.png" alt="Snow" style="width:100%"></td>
+<td style="vertical-align:middle; margin: 50px; padding: 50px;">We propose a ventilator ordering and returning policy. In the simulation study under our ventilator order 
+    and return policy, no patients were denied of ventilation and there was no excessive inventory of ventilators kept at hospitals.</td>
+</tr>
+</table>
+	
+   </div>   
+    	<div id="people"; class="tab-pane fade">
+		<br><br>
+	<p style="font-size:20px;text-align:left;font-family:Arial;"> Cornell ORIE Covid-19 Projects Coordinator</p>
+	  David Shmoys, Director Center For<a href="https://datasciencecenter.cornell.edu"> Data Science For Enterprise and Society </a>
+		
+		<br><br>
+
+	<p style="font-size:20px;text-align:left;font-family:Arial;"> Algorithm Design</p>                         
+	  Jim Dai, Leon C. Welch Professor of Engineering,  School of Operations Research and Information Engineering
+		<br><br>
+	  Alyf Janmohamed, PhD student, School of Operations Research and Information Engineering
+		<br><br>
+	  Mark Gluzman, PhD student, Center for Applied Mathematics 
+		<br><br>
+	  Yaosheng Xu, PhD student, Department of Statistics and Data Science
+		<br><br>
+
+	<p style="font-size:20px;text-align:left;font-family:Arial;"> Web Implementation</p>    
+	  Gloria Ren, Senior, School of Operations Research and Information Engineering
+		<br><br>
+	<hr> 
+
+	<p style="font-size:20px;text-align:center;font-family:Arial;"> Additional Sources</p> 
+		<a href="https://covid19.cheme.cornell.edu/dashboard/"><p style="text-align:center">covid19.cheme.cornell.edu</p></a>
+		<a href="https://www.covidalliance.com/"><p style="text-align:center"> covidalliance.com</p></a>
+		
+		<br><br>
+		<br><br>
+		
+	 </div> 
+  </body>
+</html>
